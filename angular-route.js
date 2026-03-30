@@ -21,7 +21,7 @@
  * <div doc-module-components="ngRoute"></div>
  */
  /* global -ngRouteModule */
-var ngRouteModule = angular.module('ngRoute', ['ng']).
+const ngRouteModule = angular.module('ngRoute', ['ng']).
                         provider('$route', $RouteProvider),
     $routeMinErr = angular.$$minErr('ngRoute');
 
@@ -44,7 +44,7 @@ function $RouteProvider() {
     return angular.extend(Object.create(parent), extra);
   }
 
-  var routes = {};
+  const routes = {};
 
   /**
    * @ngdoc method
@@ -147,7 +147,7 @@ function $RouteProvider() {
    */
   this.when = function(path, route) {
     //copy original route object to preserve params inherited from proto chain
-    var routeCopy = angular.copy(route);
+    const routeCopy = angular.copy(route);
     if (angular.isUndefined(routeCopy.reloadOnSearch)) {
       routeCopy.reloadOnSearch = true;
     }
@@ -161,7 +161,7 @@ function $RouteProvider() {
 
     // create redirection for trailing slashes
     if (path) {
-      var redirectPath = (path[path.length - 1] == '/')
+      const redirectPath = (path[path.length - 1] === '/')
             ? path.substr(0, path.length - 1)
             : path + '/';
 
@@ -197,7 +197,7 @@ function $RouteProvider() {
     * Inspired by pathRexp in visionmedia/express/lib/utils.js.
     */
   function pathRegExp(path, opts) {
-    var insensitive = opts.caseInsensitiveMatch,
+    const insensitive = opts.caseInsensitiveMatch,
         ret = {
           originalPath: path,
           regexp: path
@@ -207,8 +207,8 @@ function $RouteProvider() {
     path = path
       .replace(/([().])/g, '\\$1')
       .replace(/(\/)?:(\w+)([\?\*])?/g, function(_, slash, key, option) {
-        var optional = option === '?' ? option : null;
-        var star = option === '*' ? option : null;
+        const optional = option === '?' ? option : null;
+        const star = option === '*' ? option : null;
         keys.push({ name: key, optional: !!optional });
         slash = slash || '';
         return ''
@@ -352,7 +352,7 @@ function $RouteProvider() {
      *         resolve: {
      *           // I will cause a 1 second delay
      *           delay: function($q, $timeout) {
-     *             var delay = $q.defer();
+     *             const delay = $q.defer();
      *             $timeout(delay.resolve, 1000);
      *             return delay.promise;
      *           }
@@ -372,7 +372,7 @@ function $RouteProvider() {
      *   <file name="protractor.js" type="protractor">
      *     it('should load and compile correct template', function() {
      *       element(by.linkText('Moby: Ch1')).click();
-     *       var content = element(by.css('[ng-view]')).getText();
+     *       let content = element(by.css('[ng-view]')).getText();
      *       expect(content).toMatch(/controller\: ChapterController/);
      *       expect(content).toMatch(/Book Id\: Moby/);
      *       expect(content).toMatch(/Chapter Id\: 1/);
@@ -445,7 +445,7 @@ function $RouteProvider() {
      * instance of the Controller.
      */
 
-    var forceReload = false,
+    let forceReload = false,
         preparedRoute,
         preparedRouteIsUpdateOnly,
         $route = {
@@ -515,18 +515,18 @@ function $RouteProvider() {
      * visionmedia/express/lib/router/router.js.
      */
     function switchRouteMatcher(on, route) {
-      var keys = route.keys,
+      const keys = route.keys,
           params = {};
 
       if (!route.regexp) return null;
 
-      var m = route.regexp.exec(on);
+      const m = route.regexp.exec(on);
       if (!m) return null;
 
-      for (var i = 1, len = m.length; i < len; ++i) {
-        var key = keys[i - 1];
+      for (const i = 1, len = m.length; i < len; ++i) {
+        let key = keys[i - 1];
 
-        var val = m[i];
+        const val = m[i];
 
         if (key && val) {
           params[key.name] = val;
@@ -536,7 +536,7 @@ function $RouteProvider() {
     }
 
     function prepareRoute($locationEvent) {
-      var lastRoute = $route.current;
+      let lastRoute = $route.current;
 
       preparedRoute = parseRoute();
       preparedRouteIsUpdateOnly = preparedRoute && lastRoute && preparedRoute.$$route === lastRoute.$$route
@@ -553,8 +553,8 @@ function $RouteProvider() {
     }
 
     function commitRoute() {
-      var lastRoute = $route.current;
-      var nextRoute = preparedRoute;
+      const lastRoute = $route.current;
+      const nextRoute = preparedRoute;
 
       if (preparedRouteIsUpdateOnly) {
         lastRoute.params = nextRoute.params;
@@ -578,7 +578,7 @@ function $RouteProvider() {
         $q.when(nextRoute).
           then(function() {
             if (nextRoute) {
-              var locals = angular.extend({}, nextRoute.resolve),
+              let locals = angular.extend({}, nextRoute.resolve),
                   template, templateUrl;
 
               angular.forEach(locals, function(value, key) {
@@ -608,7 +608,7 @@ function $RouteProvider() {
           }).
           // after route change
           then(function(locals) {
-            if (nextRoute == $route.current) {
+            if (nextRoute === $route.current) {
               if (nextRoute) {
                 nextRoute.locals = locals;
                 angular.copy(nextRoute.params, $routeParams);
@@ -616,7 +616,7 @@ function $RouteProvider() {
               $rootScope.$broadcast('$routeChangeSuccess', nextRoute, lastRoute);
             }
           }, function(error) {
-            if (nextRoute == $route.current) {
+            if (nextRoute === $route.current) {
               $rootScope.$broadcast('$routeChangeError', nextRoute, lastRoute, error);
             }
           });
@@ -646,13 +646,13 @@ function $RouteProvider() {
      * @returns {string} interpolation of the redirect path with the parameters
      */
     function interpolate(string, params) {
-      var result = [];
+      const result = [];
       angular.forEach((string || '').split(':'), function(segment, i) {
         if (i === 0) {
           result.push(segment);
         } else {
-          var segmentMatch = segment.match(/(\w+)(?:[?*])?(.*)/);
-          var key = segmentMatch[1];
+          const segmentMatch = segment.match(/(\w+)(?:[?*])?(.*)/);
+          let key = segmentMatch[1];
           result.push(params[key]);
           result.push(segmentMatch[2] || '');
           delete params[key];
@@ -696,7 +696,7 @@ ngRouteModule.provider('$routeParams', $RouteParamsProvider);
  *  // Route: /Chapter/:chapterId/Section/:sectionId
  *  //
  *  // Then
- *  $routeParams ==> {chapterId:'1', sectionId:'2', search:'moby'}
+ *  $routeParams ===> {chapterId:'1', sectionId:'2', search:'moby'}
  * ```
  */
 function $RouteParamsProvider() {
@@ -857,7 +857,7 @@ ngRouteModule.directive('ngView', ngViewFillContentFactory);
       <file name="protractor.js" type="protractor">
         it('should load and compile correct template', function() {
           element(by.linkText('Moby: Ch1')).click();
-          var content = element(by.css('[ng-view]')).getText();
+          let content = element(by.css('[ng-view]')).getText();
           expect(content).toMatch(/controller\: ChapterCtrl/);
           expect(content).toMatch(/Book Id\: Moby/);
           expect(content).toMatch(/Chapter Id\: 1/);
@@ -917,12 +917,12 @@ function ngViewFactory($route, $anchorScroll, $animate) {
         }
 
         function update() {
-          var locals = $route.current && $route.current.locals,
+          let locals = $route.current && $route.current.locals,
               template = locals && locals.$template;
 
           if (angular.isDefined(template)) {
-            var newScope = scope.$new();
-            var current = $route.current;
+            const newScope = scope.$new();
+            let current = $route.current;
 
             // Note: This will also link all children of ng-view that were contained in the original
             // html. If that content contains controllers, ... they could pollute/change the scope.
@@ -930,7 +930,7 @@ function ngViewFactory($route, $anchorScroll, $animate) {
             // Note: We can't remove them in the cloneAttchFn of $transclude as that
             // function is called before linking the content, which would apply child
             // directives to non existing elements.
-            var clone = $transclude(newScope, function(clone) {
+            const clone = $transclude(newScope, function(clone) {
               $animate.enter(clone, null, currentElement || $element).then(function onNgViewEnter() {
                 if (angular.isDefined(autoScrollExp)
                   && (!autoScrollExp || scope.$eval(autoScrollExp))) {
@@ -963,16 +963,16 @@ function ngViewFillContentFactory($compile, $controller, $route) {
     restrict: 'ECA',
     priority: -400,
     link: function(scope, $element) {
-      var current = $route.current,
+      const current = $route.current,
           locals = current.locals;
 
       $element.html(locals.$template);
 
-      var link = $compile($element.contents());
+      const link = $compile($element.contents());
 
       if (current.controller) {
         locals.$scope = scope;
-        var controller = $controller(current.controller, locals);
+        const controller = $controller(current.controller, locals);
         if (current.controllerAs) {
           scope[current.controllerAs] = controller;
         }

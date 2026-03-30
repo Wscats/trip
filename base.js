@@ -1,4 +1,6 @@
-var app = angular.module('wsscat', ['ngRoute']);
+'use strict';
+
+const app = angular.module('wsscat', ['ngRoute']);
 app.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.when('/index', {
 		templateUrl: 'template/index.html',
@@ -23,9 +25,9 @@ app.run([function($rootScope) {
 	})*/
 	//自执行函数
 	(function(doc, win) {
-		var docEl = doc.documentElement,
+		const docEl = doc.documentElement,
 			recalc = function() {
-				var clientWidth = docEl.clientWidth;
+				let clientWidth = docEl.clientWidth;
 				if(!clientWidth) return;
 				if(clientWidth >= 740) {
 					clientWidth = 740;
@@ -73,7 +75,7 @@ app.directive('xcheader', function() {
 app.service('swipe', function() {
 	return {
 		me: function() {
-			var myswiper = new Swiper('.swiper-container', {
+			const myswiper = new Swiper('.swiper-container', {
 				// direction: 'vertical',  // 一个垂直方向的
 				loop: true, // 一个循环的滑动
 				pagination: '.swiper-pagination', // 分页器
